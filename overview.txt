@@ -1,0 +1,131 @@
+Overview
+- runs an LK-based kernel augmented with kernel objects and userland support
+  - channels and sockets used for transmitting data
+  - events / signals used for signalling async events
+  - threading used for concurrency
+- device drivers, networking and filesystems exist as userland processes 
+  although some device support is directly in the kernel, such as pci primitives
+  - not a pure microkernel design, more pragmatic than ideological
+  - devmgr handles userland startup and runs devices
+  - devhost instances for each device driver
+  - netstack runs networking
+  - application_manager receives messages for launching apps based on URIs
+- a ddk isolates details of driver implementation
+- devices appear in a /dev filesystem
+- looks like there is support for dart and golang for apps and components
+  (and possibly rust soon?)
+- in extreme flux, and higher level components are not all runable today
+  - some graphics tests work, but the sysui isnt runnable
+  - i cant get any dart stuff running
+  - net stack works but i'm told is likely to be replaced with golang impl 
+
+----
+
+magenta - kernel + base services
+fuchsia - OS services (the OS) ?
+magma - graphics engine (half in app, half in userland driver)
+dart - nextgen JS-like language with some types and generics and concurrency
+flutter - framework for making portable mobile apps (in dart?)
+mojo - IPC toolkit for component development
+
+launches apps by URL by writing to /dev/class/misc/dmctl
+  - mojo apps launched with "file:///path/" (was "mojo:appname")
+  - debug with "kerneldebug msg" (prefix with "`" in mxshell)
+
+mxshell:
+  - ampersand for bg (must be last arg)
+  - FOO=bar prefix for env
+  - `debugcmds
+  - mojo:mojoapp
+  - path is /system/bin /boot/bin
+  - arg of ">dst" for redirect, must be last arg
+  - builtin dm sends cmd to dm
+
+console has cmd processor
+
+exec (from mxshell src)
+  launchpad_create
+  launchpad_arguments
+  launchpad_environ
+  launchpad_add_vdso_vmo
+  launchpad_clone_mxio_root
+  launchpad_vmo_from_fd
+  launchpad_load_vdso
+  launchpad_clone_mxio_cwd
+  launchpad_clone_fd
+  launchpad_start
+  mx_handle_wait_one
+  mx_object_get_info
+  mx_handle_close
+  launchpad_destroy
+
+
+devhost
+  - processes dmctl channel
+  - starts up builtin drivers
+  - starts up /boot/lib/driver/* 
+    (dlopen's into same space and gets __magenta_driver__)
+
+- startup
+  - magenta kernel builds process with userboot image, opens several handles
+    and sends a bootstrap message to the process
+  - userboot starts in system/core/userboot/start.c _start()
+    this is the first process
+  - userboot runs devmgr from ELF file on bootfs
+  - devmgr manages filesystem tree
+    including bootfs, system, dev, mem, rpc
+  - devmgr launches services and drivers
+    - crashlogger
+    - mxsh:autorun
+    - application-manager
+    - watches block drivers, and launches gpt, minfs or fat
+    - mxsh:console and mxsh:vc
+    - acpisvc
+  - each driver is run in a devhost instance
+    cmd line args selects which driver
+    loads .so from /boot/lib/driver/*.so (or /system/lib/driver)
+    - acpi
+    - root - contains busses and singletons 
+      devmgr_init_pcie()
+    - busses run more instances of devhost as needed
+
+- mxrio stuff does remote IO calls over a channel
+  ./system/ulib/mxio/remoteio.c
+- devhost / devmgr look like they pass back messages? XXX
+
+XXX look at mxio layer
+XXX look at devhost_msg_t and its IPC processing
+XXX DDK - protocols, syscalls
+
+launchpad lib has utils for executing new processes (exec is not a syscall)
+
+- MINOR BUG: _driver_acpi_root device has a NULL .name field.
+
+- drivers are run in userland and are managed by devhost and devmgr
+  - they use ddk lib to access hardware features like pci
+    which get translated to system calls
+  - threads are used to dispatch interrupts with system calls for
+    waiting for an interrupt, and completing an interrupt
+  - devices set signals on their handle to communicate when IO is ready
+  - devices provide ops through one of the DDK class protocols
+    for accessing device features, such as "recv"
+  - XXX bound into fs tree?
+  - XXX IPC to talk to driver?
+
+- example driver: eth
+  - uses pci to access hardware, which in turn calls down to syscalls
+  - irq_thread handles irq processing.  irq just sets DEV_STATE_READABLE
+    when appropriate
+  - eth_recv can read a frame if in READABLE state, clearing the state
+    when appropriate.  up to caller to wait on READABLE
+
+- application_manager - apps/modular/src/application_manager
+  - XXX this looks in flux as of 20161110. more url handlers later?
+    more config file or features?
+  - parses a startup config that has initial apps to run
+    and runs each of these first
+  - reads commands on handle, splits on whiespace and executes application
+    based on url handler.  right now just file://
+  - devmgr_launch_devhost() sends messages to app manager to execute
+  - devhost_launch_devhost() calls devmgr_launch_devhost()
+  - dmctl passes file: URLs to app_launcher channel to application_manager

@@ -1,0 +1,365 @@
+
+welcome to lk/MP
+
+boot args 0x1 0xffffffff80389cdc 0x0 0x0
+INIT: cpu 0, calling hook 0xffffffff80134ba4 (version) at level 0x3ffff, flags 0x1
+version:
+    arch:     X86
+    platform: PC
+    target:   PC_X86
+    project:  MAGENTA_PC_X86_64
+    buildid:  GIT_6569B8C95675E40E61C2916BD2D3E46AC95D4D8A_LOCAL
+INIT: cpu 0, calling hook 0xffffffff801385c4 (vm_preheap) at level 0x3ffff, flags 0x1
+initializing heap
+INIT: cpu 0, calling hook 0xffffffff80138608 (vm) at level 0x50000, flags 0x1
+INIT: cpu 0, calling hook 0xffffffff801002fc (acpi_tables) at level 0x50001, flags 0x1
+INIT: cpu 0, calling hook 0xffffffff801019a8 (display_memtype) at level 0x50001, flags 0x1
+INIT: cpu 0, calling hook 0xffffffff80100a30 (apic) at level 0x50002, flags 0x1
+INIT: cpu 0, calling hook 0xffffffff80102e88 (hpet) at level 0x50002, flags 0x1
+INIT: cpu 0, calling hook 0xffffffff801023cc (timer) at level 0x50003, flags 0x1
+calibrate_apic_timer:292: Calibrating APIC with HPET
+calibrate_tsc:367: Calibrating TSC with HPET
+platform_init_timer:497: timer features: constant_tsc 1 invariant_tsc 0 tsc_deadline 0
+platform_init_timer:498: Using HPET as wallclock
+initializing mp
+initializing threads
+initializing timers
+INIT: cpu 0, calling hook 0xffffffff80102db8 (watchdog) at level 0x60000, flags 0x1
+INIT: cpu 0, calling hook 0xffffffff80123204 (debuglog) at level 0x6ffff, flags 0x1
+creating bootstrap completion thread
+[00000.002] 00000.00000> top of bootstrap2()
+[00000.002] 00000.00000> INIT: cpu 0, calling hook 0xffffffff80145e18 (global_prng) at level 0x70000, flags 0x1
+[00000.002] 00000.00000> WARNING: System has no entropy source.  It is completely unsafe to use this system for any cryptographic applications.
+[00000.002] 00000.00000> INIT: cpu 0, calling hook 0xffffffff8015262c (magenta) at level 0x70000, flags 0x1
+[00000.002] 00000.00000> INIT: cpu 0, calling hook 0xffffffff80169854 (dpc) at level 0x70000, flags 0x1
+[00000.005] 00000.00000> Vendor: Intel
+[00000.005] 00000.00000> Features: fpu sse sse2 sse3 ssse3 sse4.1 sse4.2 mmx avx avx2 fxsr xsave aesni tsc_adj smep 
+[00000.005] 00000.00000> rdrand syscall nx huge rdtscp tsc_deadline 
+[00000.005] 00000.00000> initializing platform
+[00000.005] 00000.00000> cpu topology:
+[00000.005] 00000.00000>    0: apic id 0x0 package 0 core 0 smt 0 BSP
+[00000.005] 00000.00000>    1: apic id 0x1 package 1 core 0 smt 0
+[00000.005] 00000.00000>    2: apic id 0x2 package 2 core 0 smt 0
+[00000.005] 00000.00000>    3: apic id 0x3 package 3 core 0 smt 0
+[00000.005] 00000.00000> Found 4 cpus
+[00000.005] 00000.00000> creating idle thread for cpu 1
+[00000.010] 00000.00000> creating idle thread for cpu 2
+[00000.010] 00000.00000> creating idle thread for cpu 3
+running final init tasks on cpu 1
+running final init tasks on cpu 2
+running final init tasks on cpu 3
+entering scheduler on cpu 2
+entering scheduler on cpu 3
+entering scheduler on cpu 1
+[00000.024] 00000.00000> initializing target
+[00000.024] 00000.00000> INIT: cpu 0, calling hook 0xffffffff80103610 (x86_pcie_init) at level 0x90000, flags 0x1
+[00000.024] 00000.00000> calling apps_init()
+[00000.024] 00000.00000> INIT: cpu 0, calling hook 0xffffffff80124b9c (ktrace) at level 0xaffff, flags 0x1
+[00000.050] 00000.00000> ktrace: buffer at 0xffffff90001c4000 (33554432 bytes)
+[00000.054] 00000.00000> INIT: cpu 0, calling hook 0xffffffff80134b80 (userboot) at level 0xaffff, flags 0x1
+[00000.054] 00000.00000> userboot: console init
+[00000.054] 00000.00000> userboot: bootfs          2043904 @ 0xffffffff80193000
+[00000.054] 00000.00000> userboot: ramdisk       186527744 @ 0xffffff8074ded000
+[00000.060] 00000.00000> userboot: userboot-rodata       0 @ [0x1000000,0x1002000)
+[00000.061] 00000.00000> userboot: userboot-code    0x2000 @ [0x1002000,0x100b000)
+[00000.061] 00000.00000> userboot: vdso-rodata           0 @ [0x100b000,0x1010000)
+[00000.061] 00000.00000> userboot: vdso-code        0x5000 @ [0x1010000,0x1011000)
+[00000.061] 00000.00000> userboot: entry point             @ 0x1002c10
+[00001.032] 00263.00264> userboot: searching bootfs for "bin/devmgr"
+[00001.032] 00263.00264> userboot: bin/devmgr has PT_INTERP "lib/ld.so.1"
+[00001.032] 00263.00264> userboot: searching bootfs for "lib/ld.so.1"
+[00001.032] 00263.00264> userboot: bin/devmgr started.  userboot exiting.
+[00001.033] 00272.00280> Loaded at [0x10ec000,0x1113000): <application>
+[00001.033] 00272.00280> Loaded at [0x10a6000,0x10ac000): <vDSO> (libmagenta.so)
+[00001.033] 00272.00280> Loaded at [0x1000000,0x10a6000): libc.so
+[00001.033] 00272.00280> devmgr: main()
+[00001.033] 00272.00280> devmgr: init
+[00001.033] 00272.00280> devmgr: vfs init
+[00001.033] 00272.00280> devmgr: bootfs #0 contains 130 files
+[00001.033] 00272.00280> devmgr: bootfs #1 contains 210 files
+[00001.034] 00272.00280> devmgr: launch /boot/bin/crashlogger (crashlogger)
+[00001.036] 00272.00333> devmgr: shell startup
+[00001.036] 00272.00340> devmgr: launch /boot/bin/netsvc (netsvc)
+[00001.037] 00272.00280> devmgr: launch: devhost:root /boot/bin/devhost root
+[00001.048] 00272.00340> devmgr: launch /boot/bin/mxsh (mxsh:autorun)
+[00001.051] 00272.00280> devmgr: root ctx 0x10000030ca0
+[00001.061] 00272.00340> devmgr: launch /boot/bin/application_manager (mojo-app-manager)
+[00001.063] 00346.00387> netsvc: main()
+[00001.066] 00310.00331> crashlogger service ready
+[00001.067] 00363.00407> devhost: missing acpi handle
+[00001.067] 00363.00407> devmgr: launch acpisvc
+[00001.069] 00391.00430> cannot open '/boot/autorun'
+[00001.102] 00465.00571> ethernetif_init: using a startup handle
+[00001.104] 00450.00547> application_manager: Failed to start application /boot/bin/mxsh
+[00001.106] 00500.00536> Initialized ACPI
+[00001.144] 00363.00407> AllocateBarLocked:608: Failed to preserve device 00:1f.3's PIO window [0x700, 0x73f] Attempting to re-allocate.
+[00001.146] 00363.00407> devmgr: launch: devhost:acpi /boot/bin/devhost acpi
+[00001.150] 00363.00407> kpci_init()
+[00001.153] 00363.00407> devmgr: launch: devhost:pci#0:8086:29c0 /boot/bin/devhost pci=0
+[00001.157] 00363.00407> devmgr: launch: devhost:pci#1:1234:1111 /boot/bin/devhost pci=1
+[00001.162] 00688.00700> devhost: cannot install root device: -20
+[00001.166] 00363.00407> devmgr: launch: devhost:pci#2:8086:100e /boot/bin/devhost pci=2
+[00001.173] 00363.00407> devmgr: launch: devhost:pci#3:8086:2918 /boot/bin/devhost pci=3
+[00001.184] 00363.00407> devmgr: launch: devhost:pci#4:8086:2922 /boot/bin/devhost pci=4
+[00001.194] 00363.00407> devmgr: launch: devhost:pci#5:8086:2930 /boot/bin/devhost pci=5
+[00001.206] 00363.01020> i8042 device 0xab 0x41
+[00001.266] 00363.00407> rpc-device: stale ios 0x10a57c0
+[00001.267] 00272.00333> devmgr: launch /boot/bin/mxsh (mxsh:console)
+
+MXCONSOLE...
+-----------------------------------------------------------------
+Welcome to fuchsia.
+  · type 'help' for a list of builtin commands
+  · hit enter if you do not see a '>' prompt
+  · launch applications from /boot/apps with 'mojo:$APP_NAME'
+-----------------------------------------------------------------
+> [00001.343] 00763.00792> initialized vc on display bochs_vbe, width=1024 height=768 stride=1024 format=1
+[00001.346] 00763.01472> vc: new input device /dev/class/input/000
+[00001.350] 00763.01472> vc: new input device /dev/class/input/001
+[00001.353] 00804.00841> eth: using legacy irq mode
+[00001.353] 00804.00841> eth: mac: 52:54:00:12:34:56
+[00001.356] 00804.00841> eth: iomem @0x7ff000000000 (phys 23322000)
+[00001.357] 00346.00387> netifc: ? /dev/class/ethernet/000
+[00001.360] 00346.00387> macaddr: 52:54:00:12:34:56
+[00001.360] 00346.00387> ip6addr: fe80::5054:ff:fe12:3456
+[00001.360] 00346.00387> snmaddr: ff02::1:ff12:3456
+[00001.364] 00346.00387> netsvc: start
+[00001.365] 00465.00638> ethernetif: link up (mac 52:54:00:12:34:56, mtu 1500)
+[00001.369] 00763.01604> vc: misc poll fn=misc
+[00001.369] 00763.01604> vc: misc poll fn=dmctl
+[00001.369] 00763.01604> vc: misc poll fn=console
+[00001.369] 00763.01604> vc: misc poll fn=pci
+[00001.369] 00763.01604> vc: misc poll fn=hidctl
+[00001.369] 00763.01604> vc: misc poll fn=rtc
+[00001.369] 00763.01604> vc: misc poll fn=ktrace
+[00001.369] 00763.01604> vc: misc poll fn=null
+[00001.369] 00763.01604> vc: misc poll fn=ahci
+[00001.387] 00272.00347> devmgr: launch /boot/bin/mxsh (mxsh:vc)
+[00001.394] 00272.00347> devmgr: launch /boot/bin/mxsh (mxsh:vc)
+[00001.405] 00272.00347> devmgr: launch /boot/bin/mxsh (mxsh:vc)
+[00002.104] 00465.00632> ip4_addr: 10.0.2.15 netmask: 255.255.255.0 gw: 10.0.2.2
+[00002.358] 00363.01020> i8042 device 0x00
+[00003.105] 00465.00632> ip6_addr[0]: FE80::200:FF:FE00:0
+
+
+bin
+-   240488 acpisvc
+-     9640 aslr-analysis
+-     5544 audiorecord
+-     5608 bcmctl
+-     5544 blktest
+-     9640 channel-perf
+-     5608 clock
+-   215536 core-tests
+-     5872 crasher
+-    21992 crashlogger
+-    62368 devhost
+-   153304 devmgr
+-     5544 dlog
+-     5544 driverinfo
+-     5544 dump1
+-     9704 evil-tests
+-    30184 fsck_msdosfs
+-    26512 fs_tests
+-     9640 gfxtest
+-    13736 gpt
+-    13800 hid
+-     9744 hidtouch
+-     9704 i2c
+-    13800 install-fuchsia
+-    18248 kilo
+-    13736 launch
+-     9640 lsblk
+-    13800 lsusb
+-     5544 midiecho
+-    38752 minfs
+-     5544 msd-test
+-    22432 mxsh
+-    20072 netsvc
+-     5544 reply-handle-helper
+-     5608 rng-trials
+-     9808 runtests
+-     5544 run-vc
+-     9776 sha256sum
+-     5328 spinner
+-     5544 strerror
+-     5544 suspendtest
+-     9704 synthtest
+-     5608 thread-depth-test
+-     5472 thread-injection-injected
+-     5544 thread-injection-injector
+-     5544 touch
+-     5608 tpmctl
+-     5544 traceme
+-     5544 watch
+-     9776 wavplay
+-  1219544 wpa_supplicant
+-  3312472 thinfs
+-   769512 re2_slow_tests
+-   777680 regexp_benchmark
+-    14104 epolltest
+-   367440 netstack
+-    14080 polltest
+-    14088 selecttest
+-    14120 sockettest
+-  1399648 application_manager
+-   543704 mojo_public_c_system_perftests
+-   793656 mojo_public_c_system_unittests
+-  3599400 mojo_public_cpp_bindings_perftests
+-   543680 mojo_public_cpp_environment_perftests
+-   658488 mojo_public_cpp_system_unittests
+-   314104 lua
+-   531440 libc-tests-broken
+-  1330864 leveldb_tests
+-  1485752 debugserver
+-    14032 fortune
+-  7104048 flutter_wtf_unittests
+-   406080 dropbear
+-  8767840 dart
+- 44351096 dart_vm_tests
+-    18864 run_dart_vm_tests
+-    13984 cowsay
+-    14024 time
+-   372256 bssl
+
+apps:
+-  7821897 armadillo_user_shell
+-  2268175 modules_gallery
+- 15545552 compositor_service
+-  2161712 compositor_services_apptests
+- 15111272 hello_compositor
+-  2587336 input_manager_service
+- 15848616 jank_view
+-  2747184 launcher
+- 15807696 noodles_view
+- 15787160 paint_view
+- 15770776 shapes_view
+- 15770784 spinning_square_view
+-  2566896 tile_view
+-  2710224 view_manager_service
+-   948440 echo_client
+-   952536 echo_client_sync
+-   948432 echo_server
+-       43 hello_content
+-   997600 hello_content_handler
+-   952536 hello_mojo_client
+-   948448 hello_mojo_server
+- 14287640 shapes
+-    13912 tiny
+-  3116096 audio_server
+-  2935912 flog_service
+-  2776040 flog_viewer
+-  5317240 media_audio_apptests
+-  3223088 media_cpp_apptests
+-  3542736 media_demux_apptests
+-  5181768 media_service
+-  4792624 media_service_apptests
+-  3399216 media_util_apptests
+- 17462608 video_player
+-  3202400 ledger
+-  3538568 ledger_codex_apptests
+-  1223576 icu_data_provider
+-  1050880 framebuffer
+-  1116752 fonts
+- 31775648 flutter_content_handler
+-     1418 hello_flutter
+-     1561 spinning_square
+-      256 hello_fuchsia.dart
+-  1747832 component_manager
+-  1145360 request_components
+d        0 acquirers
+d        0 agents
+-  1567016 context_engine
+-  9235984 dart_content_handler
+-  3041576 device_runner
+-  2373888 document_store
+-  2369832 document_store_test
+-  2255144 dummy_device_shell
+-  3205536 dummy_user_shell
+-      843 hello_dart.dartx
+-   964880 logging
+-  2227280 maxwell_test
+-  3762464 resolver
+-  1513784 suggestion_engine
+-  4098368 story_manager
+-  3934576 story_runner
+- 17281952 example_module1
+- 17277856 example_module2
+-   383660 example_module3.flx
+- 17454232 example_recipe
+
+
+
+> `help
+ command list:
+    ut              : Run unittests
+    mx              : magenta diagnostics
+    heap            : heap debug commands
+    gfx             : gfx commands
+    help            : this list
+    test            : test the command processor
+    history         : command history
+    vmm             : virtual memory manager
+    vm_object       : vm object debug commands
+    vm              : vm commands
+    pmm             : physical memory manager
+    vm_page         : vm_page debug commands
+    rng32           : Generate and print a random 32 bit unsigned integer using the HW RNG
+    rng             : Generate and print N random bytes using the HW RNG
+    reboot          : soft reset
+    poweroff        : powerdown
+    version         : print version
+    dw              : display memory in words
+    dh              : display memory in halfwords
+    db              : display memory in bytes
+    mw              : modify word of memory
+    mh              : modify halfword of memory
+    mb              : modify byte of memory
+    fw              : fill range of memory by word
+    fh              : fill range of memory by halfword
+    fb              : fill range of memory by byte
+    mc              : copy a range of memory
+    crash           : intentionally crash
+    stackstomp      : intentionally overrun the stack
+    mtest           : simple memory test
+    cmdline         : display kernel commandline
+    chain           : chain load another binary
+    sleep           : sleep number of seconds
+    sleepm          : sleep number of milliseconds
+    lspci           : Enumerate the devices detected in PCIe ECAM space
+    pciunplug       : Force "unplug" the specified PCIe device
+    pcireset        : Initiate a Function Level Reset of the specified device.
+    pcirescan       : Force a rescan of the PCIe configuration space, matching drivers to unclaimed devices as we go.  Then attempt to start all newly claimed devices.
+    printf_tests    : test printf
+    thread_tests    : test the scheduler
+    clock_tests     : test clocks
+    sleep_tests     : tests sleep
+    bench           : miscellaneous benchmarks
+    fibo            : threaded fibonacci
+    spinner         : create a spinning thread
+    sync_ipi_tests  : test synchronous IPIs
+    mem_test        : test memory
+    cache_tests     : test/bench the cpu cache
+    string          : memcpy tests
+    thread          : list kernel threads with options
+    threadstats     : thread level statistics
+    threadload      : toggle thread load display
+    kill            : kill a thread
+    memtype         : memory type commands
+    apic            : apic commands
+    cpu             : cpu test commands
+
+
+> dm help
+             - dump device tree
+ [XXX lsof        - list open remoteio files and devices]
+ crash       - crash the device manager
+ poweroff    - poweroff the system
+ reboot      - reboot the system
+ kerneldebug - send a command to the kernel
+ ktraceoff   - stop kernel tracing
+ ktraceon    - start kernel tracing
+ acpi-ps0    - invoke the _PS0 method on an acpi object
+ (and mojo:)
+
+
