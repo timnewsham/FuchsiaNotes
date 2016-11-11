@@ -10,6 +10,8 @@ Overview
   - devhost instances for each device driver
   - netstack runs networking
   - application_manager receives messages for launching apps based on URIs
+  - devices/services support one of several device class protocols
+    which provide a set of methods to interact with the driver
 - a ddk isolates details of driver implementation
 - devices appear in a /dev filesystem
 - looks like there is support for dart and golang for apps and components
@@ -109,6 +111,10 @@ launchpad lib has utils for executing new processes (exec is not a syscall)
   - devices set signals on their handle to communicate when IO is ready
   - devices provide ops through one of the DDK class protocols
     for accessing device features, such as "recv"
+  - services/devices bind to fs paths with ioctl_devmgr_mount_fs
+    (XXX devmgr_connect?)
+  - mxio library supports ops to remote servers (mx_remote_ops)
+    in ulib/mxio/remoteio.c. Uses message passing to servers.
   - XXX bound into fs tree?
   - XXX IPC to talk to driver?
 
@@ -129,3 +135,27 @@ launchpad lib has utils for executing new processes (exec is not a syscall)
   - devmgr_launch_devhost() sends messages to app manager to execute
   - devhost_launch_devhost() calls devmgr_launch_devhost()
   - dmctl passes file: URLs to app_launcher channel to application_manager
+
+- netsvc
+  - looks like its for supporting netboot during development
+  - has a shell and logging on udp6
+  - also spawns netstack for the real network stack
+    (note: its gives netstack a procname of net:mxsh, this appears to be a bug)
+  see ./magenta/system/public/magenta/netboot.h and netsvc.c
+  several tools in magenta/system/tools/
+  built to ./out/build-magenta/tools/net*
+
+- netstack
+  - started by netsvc (or manually)
+  - binds to /dev/socket
+    /dev/socket/none - for getaddrinfo and other unconnected apis
+    /dev/socket/socket/domain/type/protocol - an uninitialized socket
+      - subdir "accept" opened to accept
+  - magenta/system/ulib/mxio/bsdsocket.c provides BSD socket API
+
+
+- helpful commands from mxsh
+  `thread list
+  `mx ps
+  dm reboot
+
