@@ -59,7 +59,7 @@ devhost
   - starts up /boot/lib/driver/* 
     (dlopen's into same space and gets __magenta_driver__)
 
-- startup
+- startup [https://github.com/fuchsia-mirror/docs/blob/master/boot_sequence.md]
   - magenta kernel builds process with userboot image, opens several handles
     and sends a bootstrap message to the process
   - userboot starts in system/core/userboot/start.c _start()
@@ -85,6 +85,10 @@ devhost
   - devmgr runs /system/bin/init (bin/init/init.c), this kicks off fuchsia
     - creates a new job, renaming itself to "fuchsia"
     - runs /system/bin/application_manager (application/src/manager/main.cc)
+      - reads /system/data/application_manager/initial.config
+        - this runs /system/apps/bootstrap
+      - listens on the app launcher channel (accessible through "dm"?)
+        - takes commands like "@scope uri args" and executes the right program
     - repeats if it ever stops
   - devmgr runs "/boot/bin/sh /boot/autorun"
 

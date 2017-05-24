@@ -63,10 +63,12 @@ filesystems are written as processes using a DDK interface.
       debugging interface.  Output goes to serial console.
       See magenta/third_party/uapp/dash/src/bltin/magenta.c mxc_k() for details
       See kernel/lib/magenta/diagnostics.cpp cmd_diagnostics() for mx commands.
-    * from shell run `@ bootstrap launch spinning_square`.
-      Sends a message to dmctl to launch an app.
+    * from shell run `@?` and `@ bootstrap launch spinning_square`.
+      Sends a message to dmctl, which sends it to the application manager
+      which tries to launch an application.
       See magenta/third_party/uapp/dash/src/bltin/magenta.c mxc_at() for details
-    * from shell run `dm help`, `dm reboot`, `dm "kerneldebug help` (same as `k help`)
+      See application/src/manager/command_listener.cc
+    * from shell run `dm help`, `dm reboot`, `dm "kerneldebug help` (same as `k help`), `dm @?` (same as `@?`)
       Sends a message directly to dmctl
       XXX show equivalent command as launching bootstrap?
       See magenta/third_party/uapp/dash/src/bltin/magenta.c mxc_dm() for details
