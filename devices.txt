@@ -216,3 +216,23 @@ system/ulib/pty-core/pty-core.c pty
     IOCTL_PTY_MAKE_ACTIVE
     IOCTL_PTY_READ_EVENTS
 
+
+-----
+socket: 
+  - get handle from /dev/socket/socket/<DOM>/<TYP>/<PROT>
+    - MXRIO_CONNECT
+    - MXRIO_BIND
+    - MXRIO_LISTEN
+    - MXRIO_SOCKET_DIR_ACCEPT
+    - MXRIO_GETPEERNAME
+    - MXRIO_GETSOCKNAME
+    - MXRIO_GETPEERNAME
+    - MXRIO_GETSOCKOPT
+    - MXRIO_SETSOCKOPT
+  - get handle from /dev/socket/none
+    - MXRIO_GETADDRINFO
+
+----
+    mxio_remote_create
+
+    mx_channel_call

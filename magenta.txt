@@ -30,6 +30,9 @@ filesystems are written as processes using a DDK interface.
 * object handles can be transfered to other processes via message passing.
   while in transit they are not owned by the sender or the receiver, but
   are owned by the kernel.
+* kernel has policy settings for limiting operations. XXX investigate more XXX QueryPolicy
+* handles have weak obfuscation.  each process has a random mask
+  that handles are xor'd against.
 
 = Drivers and DDK
 

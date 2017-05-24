@@ -56,7 +56,7 @@ int main(int argc, char **argv)
     min = h1 & ~0xffffff;
     max = min + 0xffffff;
     printf("search %x - %x\n", min, max);
-    for(i = min; i < max; i++) {
+    for(i = min; i < max; i+=2) {
         getHandle(i);
     }
     return 0;
