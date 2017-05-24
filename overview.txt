@@ -34,15 +34,6 @@ launches apps by URL by writing to /dev/class/misc/dmctl
   - mojo apps launched with "file:///path/" (was "mojo:appname")
   - debug with "kerneldebug msg" (prefix with "`" in mxshell)
 
-mxshell:
-  - ampersand for bg (must be last arg)
-  - FOO=bar prefix for env
-  - `debugcmds
-  - mojo:mojoapp
-  - path is /system/bin /boot/bin
-  - arg of ">dst" for redirect, must be last arg
-  - builtin dm sends cmd to dm
-
 console has cmd processor
 
 exec (from mxshell src)
@@ -90,6 +81,12 @@ devhost
     - root - contains busses and singletons 
       devmgr_init_pcie()
     - busses run more instances of devhost as needed
+  - devmgr runs shell on serial console
+  - devmgr runs /system/bin/init (bin/init/init.c), this kicks off fuchsia
+    - creates a new job, renaming itself to "fuchsia"
+    - runs /system/bin/application_manager (application/src/manager/main.cc)
+    - repeats if it ever stops
+  - devmgr runs "/boot/bin/sh /boot/autorun"
 
 - mxrio stuff does remote IO calls over a channel
   ./system/ulib/mxio/remoteio.c
@@ -153,9 +150,35 @@ launchpad lib has utils for executing new processes (exec is not a syscall)
       - subdir "accept" opened to accept
   - magenta/system/ulib/mxio/bsdsocket.c provides BSD socket API
 
-
 - helpful commands from mxsh
-  `thread list
-  `mx ps
+  k thread list
+  k mx ps
   dm reboot
+
+- too early stuff
+  - apps/component_manager
+    - looks like mojo components will be loaded by URL over network
+  - apps/maxwell - ambient and task-related context for apps
+    - has a GPS "acquirer"
+  - ledger - distributed storage
+  - mozart - apps and services for GUI
+  - modular - experimental app platform - with "call by meaning"
+    file:///system/apps/launcher file:///system/apps/device_runner
+    "Modular provides a framework for ephemerally downloaded applications which may have been implemented in 
+     different programming languages to run in a shared context and provide a composed experience to the user. The 
+     framework is also responsible for application lifecycle, resource management, view hierarchy, authentication, 
+     etc."
+  - motown / media - playback and media service
+
+- bootstrap and launcher 
+  - bootstrap and launcher are tools for running some apps in an appropriate
+    environment.  grep through *.md files for examples.
+  @ bootstrap launch basic_wm
+  @ bootstrap launch spinning_square
+  @ bootstrap launch hello_material
+  @ bootstrap device_runner --user-shell=dev_user_shell --user-shell-args=--root-module=example_flutter_hello_world
+  @ bootstrap launch video_player --path=/data/vid.ogv
+  - after launching basic_wm you can use /system/apps/launch to launch
+    other apps in windows instead of full screen.
+
 
