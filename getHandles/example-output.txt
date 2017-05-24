@@ -1,0 +1,40 @@
+magenta$ getHandles
+h1 is 531d291f and h2 is 53052915
+search 53000000 - 53ffffff
+53052914 type CHANNEL/4 rights e koid 1c54
+53052915 type CHANNEL/4 rights e koid 1c54
+53052fc4 type PROCESS/1 rights 1cf koid 1c1e
+53052fc5 type PROCESS/1 rights 1cf koid 1c1e
+531d291e type CHANNEL/4 rights e koid 1c53
+531d291f type CHANNEL/4 rights e koid 1c53
+531d2ef8 type VMEM/3 rights f7 koid 407
+531d2ef9 type VMEM/3 rights f7 koid 407
+532d2900 type EVENT/5 rights f koid 77f
+532d2901 type EVENT/5 rights f koid 77f
+532d2902 type CHANNEL/4 rights e koid 1c39
+532d2903 type CHANNEL/4 rights e koid 1c39
+532d2906 type EVENT/5 rights f koid 77f
+532d2907 type EVENT/5 rights f koid 77f
+532d290a type EVENT/5 rights f koid 77f
+532d290b type EVENT/5 rights f koid 77f
+532d290c type CHANNEL/4 rights e koid 1c37
+532d290d type CHANNEL/4 rights e koid 1c37
+532d2910 type THREAD/2 rights cf koid 1c3d
+532d2911 type THREAD/2 rights cf koid 1c3d
+532d291c type CHANNEL/4 rights e koid 1c3c
+532d291d type CHANNEL/4 rights e koid 1c3c
+532d2928 type VMEM/3 rights ff koid 1c3e
+532d2929 type VMEM/3 rights ff koid 1c3e
+532d2ef2 type CHANNEL/4 rights e koid 1c33
+532d2ef3 type CHANNEL/4 rights e koid 1c33
+532d2ef6 type CHANNEL/4 rights e koid 1c35
+532d2ef7 type CHANNEL/4 rights e koid 1c35
+532d2efa type CHANNEL/4 rights e koid 1c25
+532d2efb type CHANNEL/4 rights e koid 1c25
+53352efe type CHANNEL/4 rights e koid 1c31
+53352eff type CHANNEL/4 rights e koid 1c31
+533d2fc6 type VMAR/18 rights 1f koid 1c1f
+533d2fc7 type VMAR/18 rights 1f koid 1c1f
+539d2fce type JOB/17 rights dcf koid 460
+539d2fcf type JOB/17 rights dcf koid 460
+magenta$ 
