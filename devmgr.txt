@@ -1,0 +1,63 @@
+
+Overview:
+
+XXX
+
+---
+DEVMGR
+
+This process XXXX bootstraps the system and starts devices...
+
+---
+DEVHOST
+
+This process hosts a device driver.  It supports a small number of RPC
+calls for interacting with the device.  These are valid on the first
+handle it inherits from devmgr (the parent), and on all the channels
+opened to new devices in this devhost:
+    - MXRIO_OPEN
+    - DC_OP_CREATE_DEVICE_STUB - create new device,
+    - DC_OP_CREATE_DEVICE
+    - DC_OP_BIND_DRIVER
+
+
+- Devhost uses dh_port to wait for events
+  - to watch for events on handles, a devhost_iostate_t is filled out
+    with the handle and handler function, and port_watch is used to
+    direct events to dh_port
+
+- main gets bootstrap handle from devmgr, and listens on it
+  as the root_ios.
+
+- root_ios dispatches the startup handle to dh_handle_dc_rpc
+  - on closed, die
+  - on readable call dh_handle_rpc_read, die on errors
+
+- dh_handle_rpc_read
+  - reads dc_msg_t and 3 handles, (ignoring errors?)
+    - if msg op is MXRIO_OPEN, treat it as mxrio_msg_t(!) at dh_handle_open
+      XXX more?
+    - unpack msg into data,name,args, and handle:
+    - DC_OP_CREATE_DEVICE_STUB
+      - gets one or two handles - rpc, resource
+      - makes a new shadow device 
+      - dispatches to dh_handle_dc_rpc when handle readable/closed
+    - DC_OP_CREATE_DEVICE
+      - gets two or three handles - rpc, vmo, resource
+      - finds driver
+      - calls create op, if it exists
+      - dispatches to dh_handle_dc_rpc when handle readable/closed
+    - DC_OP_BIND_DRIVER
+      - gets one handle - vmo
+      - finds driver
+      - calls bind op if it exists
+      - sends response back
+
+- dh_handle_dc_rpc dispatched when device handles readable/closed
+  - on closed, die
+  - on readable, calls dh_handle_rpc_read and dies on error
+
+comments:
+- conflating dc_msg_t and mxrio_msg_t is a bad idea.  
+  this could be handled more gracefully.
+

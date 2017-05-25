@@ -45,6 +45,9 @@ void getHandle(mx_handle_t h)
 int main(int argc, char **argv)
 {
     mx_handle_t h1, h2, min, max, i;
+    mx_channel_call_args_t msg;
+    uint32_t nb, nh;
+    mx_status_t st;
 
     // handles are xor'd against a hidden value.  get one handle
     // to get an approximate range
@@ -58,6 +61,19 @@ int main(int argc, char **argv)
     printf("search %x - %x\n", min, max);
     for(i = min; i < max; i+=2) {
         getHandle(i);
+    }
+
+    msg.wr_bytes = 
+    msg.wr_handles = 0;
+    msg.rd_bytes = 
+    msg.rd_handles =
+    msg.wr_num_bytes = 
+    msg.wr_num_handles = 0
+    msg.rd_num_bytes = 0;
+    msg.rd_num_handles = 0;
+    x = mx_channel_call(root, 0, MX_TIME_INFINITE, &msg, &nb, &nh, &st);
+    if(x == NO_ERROR) {
+        printf("call success, got %d (%d handles)\n", nb, nh);
     }
     return 0;
 }
