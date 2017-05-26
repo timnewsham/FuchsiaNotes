@@ -135,6 +135,18 @@ in this manner, a large value can cause msg->handle[i] to read
 well beyond the message bounds. An attacker can take advantage of
 this to crash servers.
 
+RECOMMENDATION:
+
+Stop sending the hcount field and handle[] table when sending mxrio_msg_t
+messages.  This data is already passed in a secure manner by the
+kernel when calling mx_channel_write and mx_channel_read.  This
+can be done by moving these fields to the end of the mxrio_msg_t
+structure (since data past the end of data[datalen] is not written).
+However, this fix is complicated by code in devmgr.c that reads
+data into a dc_msg_t structure and then treats it as an mxrio_msg_t
+if the operation is MXRIO_OPEN.
+
+
 EXAMPLE EXPLOIT:
 
 The following program will send a message that claims to have
