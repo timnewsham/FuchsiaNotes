@@ -3,12 +3,50 @@ Overview:
 
 XXX
 
----
+------
 DEVMGR
 
-This process XXXX bootstraps the system and starts devices...
+This process handles userland startup, including starting up
+device drivers and initializing the filesystems.  It loads each
+driver up in a new devhost instance.
+  - XXX
+    - maintains devfs
 
----
+
+- At startup
+  - initialize /dev
+    - populates /dev/class 
+    - create "/dev" device, with a channel that dispatches to dc_rio_handler
+    - signal the "/dev" device with MX_USER_SIGNAL_0
+    - mount "/dev" device
+      - XXX ./system/core/devmgr/vfs-memory.cpp devfs_mount investigate
+  - initialize /
+    - setup bootfs
+      - get startup handle for bootfs
+      - ...
+    - initialize vfs layer 
+      - makes memfs for /, and addds /data, /volume, /dev/socket
+      - makes channel for rootfs, dispatching with vn->Serve
+      - sets root handle in mxio (libc), now libc calls can work
+  - creates new job for services
+  - optionally launches crashlogger
+  - starts new thread which launches console shell
+  - run /system/bin/init, with handles for applauncher and service requests
+  - start "service-starter" thread
+    - launch /boot/bin/netsvc, and /boot/bin/sh /boot/autorun, 
+    - watch /dev/class/block and for each new file added
+      - determine disk format
+      - bind device to /boot/driver/gpt.so, /boot/driver/mbr.so,
+        or automount /bobstore, minfs, or fat (/volume/efi-XX, /volume/fat-XX).
+  - start "virtcon-starter" thread
+    - watch "/dev/class/console" directory and for each new file added
+      - if name starts with "vc", set it as active and launch shell
+  - run the coordinator
+
+- coordinator
+
+
+------
 DEVHOST
 
 This process hosts a device driver.  It supports a small number of RPC
