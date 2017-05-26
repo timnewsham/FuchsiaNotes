@@ -80,18 +80,43 @@ used, a client will be able to trick the server into using one of
 its handles in an inappropriate manner.  Alternately, a server could
 trick a client into using the wrong handle.
 
-For this attack to occur, the receiver would have to mistakenly
-access more handles than were actually sent.  I haven't found any
-instances of this mistake yet.  This is partly due to the fact
-that typical receivers receive the handle count directly into msg.hcount,
-and partly because the msg.op field is used to encode the number
-of expected handles to receive, and servers seem to be validating
-this properly before acting on messages they receive.
+Although servers do a great job verifying that the number of
+handles received are the number expected, this last vulnerability
+still occurs in practice.  This happens because of the order
+of copying results out in the mx_channel_read system call.  Servers
+receive a message with a call like:
 
-A hypothetical attack would be for a server to use the handle leak
+  mx_channel_read(chan, 0, msg, msg->handle, sizeof msg, 4, &nb, &msg->hcount);
+
+The kernel copies the data out in this order:
+
+  1) copy the number of bytes to nb
+  2) copy the number of handles to msg->hcount
+  3) copy the data into &msg
+  4) copy the handles into &msg.handle
+
+In step 3, the trusted value of hcount is overwritten by the value
+the caller placed in the msg->hcount structure that it sent.  This
+value can be arbitrary, and is independent of the number of handles
+the kernel transfered.  All validation code that bases decisions
+on this value can be bypassed.  
+
+A typical attack would be for an attacker to use the handle leak
 to build information about the server's handle table (deobfuscating
-handle values).  The attacker would then send a message with no handles
-to a server that receives one handle and closes it when an error
-occurs.  By populating the msg.handle[] table with an important handle
-in the server process, the server would be tricked into closing one
-of its important handles, resulting in denial of service.
+handle values).  The attacker would then send a message that should
+have one handle to the server, but without any handles.  The attacker
+would still provide a value in msg.handle[0], and set msg.hcount to one.
+
+   msg.op = MXRIO_READ;
+   msg.datalen = 0xffffffff; // trigger an error
+   msg.hcount = 1;
+   msg.handle[0] = serverHandleValue;
+   mx_channel_write(serv, 0, &msg, MXRIO_HDR_SZ, 0, 0); // send 0 handles
+
+The receiver would think they received one handle, but the value
+of msg.handle[0] would be completley controlled by the attacker.
+If the server then performs an operation on the handle, such as
+closing the handle after an error is detected, the server would be 
+tricked into performing an unauthorized action.  Similar attacks
+could trick a srever into sending a message to the wrong server.
+
