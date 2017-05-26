@@ -1,0 +1,97 @@
+Mxio messages leak handle values and allow attacks on handles
+
+SUMMARY:
+Mxio messages, which are used to carry filesystem requests and
+responses, encode a list of handles.  These handles are sent twice
+to the peer - onces as part of the message data, and once as a table
+of handles.  This leads to security violations where handle values
+from one process leak to another, and where one process can send
+arbitrary handle values that get used by another process. It also
+increases messaging overhead without benefit.
+
+DETAILS:
+The mxio library cooperates with servers such as devmgr to provide
+filesystems to Magenta processes.  Filesystem operations are sent
+from a process to a file server using the mxrio_msg_t message format:
+
+struct mxrio_msg {
+    mx_txid_t txid;                    // transaction id
+    uint32_t op;                       // opcode
+    uint32_t datalen;                  // size of data[]
+    int32_t arg;                       // tx: argument, rx: return value
+    union {
+        int64_t off;                   // tx/rx: offset where needed
+        uint32_t mode;                 // tx: Open
+        uint32_t protocol;             // rx: Open
+        uint32_t op;                   // tx: Ioctl
+    } arg2;
+    int32_t reserved;
+    uint32_t hcount;                   // number of valid handles
+    mx_handle_t handle[4];             // up to 3 handles + reply channel handle
+    uint8_t data[MXIO_CHUNK_SIZE];     // payload
+};
+
+When sending this format over a channel to a server, the bytes
+from "txid" to "data[datalen]" are sent to the server as
+"bytes", and handles handle[0] to handle[hcount] are sent as 
+handles.  A typical write would look like:
+
+   mx_channel_write(server, 0, msg, MXRIO_HDR_SZ(msg) + msg->datalen,
+                    msg->handle, msg->hcount);
+
+This operation sends the hcount and handle[] values twice -- once
+as raw bytes, and once as handles.  The raw bytes are delivered
+without interpretation by the magenta kernel, while the handles are
+moved from the sender to the receiver while translating their
+handle values.  Sending the hcount and handle[] table as raw bytes
+is an extraneous operation which does not provide much semantic
+value.  It leads to messages being larger than they need to be,
+but also leads to two security weaknesses.
+
+Process handle values are leaked to the peer process when this
+operation is performed.  This can be seen simply by receiving
+the handle table into another table other than msg->handle.
+
+   mxrio_msg_t msg;
+   mx_handle_t tab[4];
+   uint32_t nb, nh;
+   mx_channel_read(chan, 0, &msg, tab, sizeof msg, 4, &nb, &nh);
+
+Any handles that are received into tab[] will have corresponding
+handle values in msg.handle[].  The values in the msg.handle[] table
+will be the old handle values that existed in the peer process.
+This is a violation of a security goal that handle values in one
+process should never be leaked to other processes.  It can be used
+to defeat the handle obfuscation performed by the Magenta kernel.
+
+A second, and more serious, problem occurs when the receiver
+receives such a message, reading the handle table into the message's
+"handle" field.  A typical receive would look like:
+
+   uint32_t nb, nh;
+   mx_channel_read(chan, 0, &msg, &msg.handle, sizeof msg, 4, &nb, &nh);
+
+Here the "nh" result (the number of handles actually received) may
+differ from the msg.hcount field.  Any msg.handle[] values for entries
+beyond the number of received handles (>= nh) will have arbitrary
+values passed in by the caller.  These will not be trusted handle values
+translated by the Magenta kernel.  If any of these handles are ever
+used, a client will be able to trick the server into using one of
+its handles in an inappropriate manner.  Alternately, a server could
+trick a client into using the wrong handle.
+
+For this attack to occur, the receiver would have to mistakenly
+access more handles than were actually sent.  I haven't found any
+instances of this mistake yet.  This is partly due to the fact
+that typical receivers receive the handle count directly into msg.hcount,
+and partly because the msg.op field is used to encode the number
+of expected handles to receive, and servers seem to be validating
+this properly before acting on messages they receive.
+
+A hypothetical attack would be for a server to use the handle leak
+to build information about the server's handle table (deobfuscating
+handle values).  The attacker would then send a message with no handles
+to a server that receives one handle and closes it when an error
+occurs.  By populating the msg.handle[] table with an important handle
+in the server process, the server would be tricked into closing one
+of its important handles, resulting in denial of service.

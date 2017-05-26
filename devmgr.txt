@@ -37,6 +37,7 @@ some of them automatically.
     - initialize vfs layer 
       - makes memfs for /, and addds /data, /volume, /dev/socket
       - makes channel for rootfs, dispatching with vn->Serve
+        (causes vfs_handler to get invoked for messages)
       - sets root handle in mxio (libc), now libc calls can work
   - creates new job for services
   - optionally launches crashlogger
@@ -150,7 +151,30 @@ opened to new devices in this devhost:
   - on closed, die
   - on readable, calls dh_handle_rpc_read and dies on error
 
+------------
 comments:
 - conflating dc_msg_t and mxrio_msg_t is a bad idea.  
   this could be handled more gracefully.
 
+
+------
+random
+   - vfs layer uses system/ulib/fs/*.cpp
+     - MxioDispatcher::Create
+       - mxio_dispatcher_create makes a port, a list and sets cb
+       - sets callback to mxrio_handler
+       - calls mxio_dispatcher_start to create new thread 
+         mxio_dispatcher_thread which watches on the port for readable (call cb)
+         or closable, and closes the port on close
+ mxrio_handler gets an arg which is another cb.
+    MxioDispatcher::AddVFSHandler sets the "func" which becomes this cb.
+
+  - mxio_dispatcher_thread
+    - mxrio_handler
+      - vfs_handler
+        - vfs_handler_vn - this is the handler for mxrio_msg_t's to rootfs
+  - vfs uses txn_handoff_open to forward open messages along to the right owner
+
+   ERR_DISPATCHER_INDIRECT is a special error to say that the
+      message was handed to another server who will do the replay
+      themselves.
