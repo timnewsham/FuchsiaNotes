@@ -34,8 +34,8 @@ struct mxrio_msg {
 Most operations are performed by filling out a message structure
 with the desired operation, arguments and data, sending it off
 to a server, and receiving back results in the same format.
-However, some operations, such as MXRIO_OPEN, require opening a new
-channel pair, passing in one half as part of the request message,
+However, two operations, MXRIO_OPEN and MXRIO_CLONE, require opening 
+a new channel pair, passing in one half as part of the request message,
 and then receiving an mxrio_object_t response on the other half
 of the message pair.
 
@@ -70,10 +70,15 @@ MXRIO_OPEN - open(filename=msg.data, flags=msg.arg, mode=msg.arg2.mode)
     - handles in: objhand
     - result: mxrio_object_t sent on objhand
     - on success, objhand references the opened file
+MXRIO_CLONE - clone(flag=msg.arg)
+    - handles in: objhand
+    - result: mxrio_object_t sent on objhand if MXRIO_OFLAG_PIPELINE flag not
+      set (otherwise nothing?)
+    - on success, duplicate server state, and process messages on objhand,
+      keeping the original handle open as well
 MXRIO_CLOSE - close()
     - result: msg? XXX confirm this
     - on success: the file is closed and the peer channel handle is closed
-
 
 MXRIO_READ - read(size=msg.arg, offset=serverState.offset)
     - result: mxrio_msg_t with data in msg.data[0..msg.datalen]
@@ -99,18 +104,29 @@ MXRIO_SETATTR
 
 MXRIO_READDIR
 
-MXRIO_IOCTL_1H
+MXRIO_IOCTL_1H - 1 handle
 MXRIO_IOCTL
 MXRIO_TRUNCATE
-MXRIO_RENAME
-MXRIO_LINK
+MXRIO_RENAME - 1 handle
+MXRIO_LINK - 1 handle
 MXRIO_MMAP
 MXRIO_SYNC
 MXRIO_UNLINK
+
+MXRIO_GETSOCKNAME
+MXRIO_GETPEERNAME
+MXRIO_GETSOCKOPT
+MXRIO_SETSOCKOPT
+MXRIO_GETADDRINFO
 
 
 ----
 TODO
   - explore ".." handling.. it is odd
     for example /tmp/.. is valid, but /tmp/../tmp is not.
+
+  - some pointers to system/ulib/mxio/remoteio.c
+  - some pointers to devmgr, tmpfs, vfs, etc
+
+  - note: mmap gives full region access.
 
