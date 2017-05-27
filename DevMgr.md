@@ -93,10 +93,11 @@ This process hosts device drivers.  It supports a small number of RPC
 calls for interacting with the device.  These are valid on the first
 handle it inherits from devmgr (the parent), and on all the channels
 opened to new devices in this devhost:
-    - MXRIO_OPEN
-    - DC_OP_CREATE_DEVICE_STUB - create new device,
-    - DC_OP_CREATE_DEVICE
-    - DC_OP_BIND_DRIVER
+
+- MXRIO_OPEN
+- DC_OP_CREATE_DEVICE_STUB - create new device,
+- DC_OP_CREATE_DEVICE
+- DC_OP_BIND_DRIVER
 
 - XXX TODO
     - multiple related drivers can coexist in a devhost, like the framebuffer driver and the gfx console driver.  XXX figure out how these bind together
