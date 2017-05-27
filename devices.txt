@@ -226,7 +226,6 @@ socket:
     - MXRIO_SOCKET_DIR_ACCEPT
     - MXRIO_GETPEERNAME
     - MXRIO_GETSOCKNAME
-    - MXRIO_GETPEERNAME
     - MXRIO_GETSOCKOPT
     - MXRIO_SETSOCKOPT
   - get handle from /dev/socket/none

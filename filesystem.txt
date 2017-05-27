@@ -37,7 +37,9 @@ to a server, and receiving back results in the same format.
 However, two operations, MXRIO_OPEN and MXRIO_CLONE, require opening 
 a new channel pair, passing in one half as part of the request message,
 and then receiving an mxrio_object_t response on the other half
-of the message pair.
+of the message pair.  The response may also include additional
+handles.  This is needed for handling sockets, for example, which
+uses a separate kernel socket object for IO.
 
 typedef struct {
     // Required Header
@@ -68,10 +70,12 @@ Here are some common message types used in the filesystem protocol:
 
 MXRIO_OPEN - open(filename=msg.data, flags=msg.arg, mode=msg.arg2.mode)
     - handles in: objhand
+    - handles out: XXX?
     - result: mxrio_object_t sent on objhand
     - on success, objhand references the opened file
 MXRIO_CLONE - clone(flag=msg.arg)
     - handles in: objhand
+    - handles out: XXX?
     - result: mxrio_object_t sent on objhand if MXRIO_OFLAG_PIPELINE flag not
       set (otherwise nothing?)
     - on success, duplicate server state, and process messages on objhand,
@@ -97,7 +101,6 @@ MXRIO_WRITE_AT - write(data=msg.data, datalen=msg.datalen, off=msg.arg2.off)
     - result: mxrio_msg_t
     - on success, data from msg.data[0..msg.datalen] is written into
       the file associated with the channel at the specified offset.
-
 MXRIO_SEEK
 MXRIO_STAT
 MXRIO_SETATTR
@@ -120,6 +123,27 @@ MXRIO_SETSOCKOPT
 MXRIO_GETADDRINFO
 
 
+Not all file servers speak exactly the same protocol.  To account
+for this, cloning and opening a new handle returns a type field specifying
+which flavor the server supports.  Currently these are:
+
+    MXIO_PROTOCOL_REMOTE  - "normal" remote file server object.  References
+        a file that can be read, written, seeked, ioctl, etc.
+    MXIO_PROTOCOL_PIPE    - communication channels that dont support seeking,
+        or opening new files
+    MXIO_PROTOCOL_VMOFILE - references to kernel VMO objects, not clonable, 
+        waitable, no ioctl, reads and writes to straight to the kernel.
+    MXIO_PROTOCOL_SOCKET  - network socket objects.  Supports reading and
+        writing, sendmsg, recvmsg, clone, waiting. Does not support seek
+        or clone.  These objects are referenced by two handles.  The
+        first handle is the normal filesystem channel.  The second is
+        a kernel socket object which is used for IO.  It is capable of
+        transmitting individual bytes in a stream.
+    MXIO_PROTOCOL_SERVICE - References an object that doesnt speak the
+        filesytem protocol except to support opening handles.  This
+        provides a mechanism to get a handle through filesystem operations
+        and then use it for other purposes.
+
 ----
 TODO
   - explore ".." handling.. it is odd
@@ -128,5 +152,5 @@ TODO
   - some pointers to system/ulib/mxio/remoteio.c
   - some pointers to devmgr, tmpfs, vfs, etc
 
-  - note: mmap gives full region access.
+  - note: mmap gives full region access since you cant make sub-regions
 
