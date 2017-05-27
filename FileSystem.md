@@ -71,7 +71,7 @@ which kind of connection is used.
 
 The following example illustrates these principles.  It interacts
 with the root file server to open a file (on a second channel),
-and read data from it. [testRio/testRio.c]
+and read data from it. (testRio/testRio.c)
 
 ## Operations
 
