@@ -1,5 +1,4 @@
-
-= Overview
+# Overview
 
 Magenta is the base operating system, including the kernel and
 device drivers and support infrastructure.
@@ -11,7 +10,7 @@ message passing and limited device support (mostly for supporting
 low-level bus operations).  Device drivers and
 filesystems are written as processes using a DDK interface.
 
-= Infrastructure
+# Infrastructure
 
 * stuff for loading drivers
 * filesystem to contain drivers
@@ -19,7 +18,7 @@ filesystems are written as processes using a DDK interface.
 * library support for misc stuff like executing procs
 * "misc" drivers for providing environment support, like "root handle"
 
-= Security
+# Security
 
 * there are no users. only capabilities.
 * capabilities, based on kernel object handles and rights.  Each
@@ -34,9 +33,9 @@ filesystems are written as processes using a DDK interface.
 * handles have weak obfuscation.  each process has a random mask
   that handles are xor'd against.
 
-= Drivers and DDK
+# Drivers and DDK
 
-= Kernel Code
+# Kernel Code
 
 * Handle lib/magenta/include/magenta/handle.h record the owning process,
   the object (dispatcher) they reference, and the rights associated with
@@ -57,7 +56,7 @@ filesystems are written as processes using a DDK interface.
 * important types: 
     * mx_koid_t are object IDs
 
-= Random Tips
+# Random Tips
 
 * see [https://github.com/fuchsia-mirror/magenta/blob/master/docs/hacking.md]
   for info on getting to the shell window, and using keys
