@@ -1,5 +1,5 @@
 ------
-#DEVMGR
+# DEVMGR
 
 This process handles userland startup, including starting up
 device drivers and initializing the filesystem.  It manages
@@ -87,7 +87,7 @@ XXX tie in dc_handle_device
     - notify anyone listening for changes
 
 ------
-DEVHOST
+# DEVHOST
 
 This process hosts device drivers.  It supports a small number of RPC
 calls for interacting with the device.  These are valid on the first
@@ -135,13 +135,13 @@ opened to new devices in this devhost:
     - on readable, calls dh_handle_rpc_read and dies on error
 
 ------------
-comments:
+# comments
 - conflating dc_msg_t and mxrio_msg_t is a bad idea.  
   this could be handled more gracefully.
 
 
 ------
-random
+# random
 - vfs layer uses system/ulib/fs/*.cpp
     - MxioDispatcher::Create
         - mxio_dispatcher_create makes a port, a list and sets cb
