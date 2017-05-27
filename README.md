@@ -14,6 +14,12 @@ as shell and utilities.  Fuchsia builds on this base to provide
 (stuff about ephemeral code from the network, sandboxing, post-API,
 language neutral, graphical environment, etc).
 
+# Notes
+
+- [Magenta Overview](Magenta.md)
+    - [DevMgr](DevMgr.md)
+    - [FileSystem](FileSystem.md)
+
 # References
 
 - [General Fuchsia docs](https://github.com/fuchsia-mirror/docs)
