@@ -119,7 +119,7 @@ If the `valid_pc` check succeeds, the system call handler passed in
 by the wrapper (ie. `sys_socket_read`) is finally called.
 
 System call handlers are written in C++ and can be found under
-the `kernel/lib/syscalls` directory.  For example, sys_socket_read`
+the `kernel/lib/syscalls` directory.  For example, `sys_socket_read`
 is found in `kernel/lib/syscalls/syscalls_socket.cpp`.
 System calls typically (XXX always?) make use of a dispatcher
 object derived from the `Dispatcher` class.
