@@ -17,6 +17,7 @@ language neutral, graphical environment, etc).
 # Notes
 
 - [Magenta Overview](Magenta.md)
+    - [Syscalls](Syscalls.md)
     - [DevMgr](DevMgr.md)
     - [FileSystem](FileSystem.md)
 
