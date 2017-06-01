@@ -13,7 +13,9 @@ some of them automatically.
 
 ## Environment Variables
 DevMgr receives environment variables that are passed on the
-kernel command line.  It responds to the following settings:
+[kernel command line](https://github.com/fuchsia-mirror/magenta/blob/master/docs/kernel_cmdline.md).  
+It responds to the following settings:
+
 - `crashlogger.disable` - if set, do not run `crashlogger`
 - `crashlogger.pt` - if set to `true`, pass `-pton` to `crashlogger` to enable support for Intel PT
 - `devmgr.verbose` - enable verbose logging
