@@ -93,7 +93,11 @@ tracing. It also performs an unusual check -- it calls a function
 which verifies the caller's Instruction Pointer.  Any calls that
 don't originate from the right address in a shared library are
 rejected.  This prevents developers from directly making system calls
-without going through the shared library.  The check is implemented
+without going through the shared library.  (Note: Magenta prevents
+processes from unmapping this library and mapping their own code 
+in its place).
+
+The check is implemented
 in generated functions such as `VDso::ValidSyscallPC::socket_read`,
 which are passed in by the wrapper.  These can be found in
 the generated `vdso-valid-sysret.h` header. A typical example
