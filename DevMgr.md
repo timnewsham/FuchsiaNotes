@@ -11,6 +11,7 @@ important processes, such as console and virtual-console shells.
 It notices new filesystems as they become available and mounts
 some of them automatically.
 
+## Environment Variables
 DevMgr receives environment variables that are passed on the
 kernel command line.  It responds to the following settings:
 - `crashlogger.disable` - if set, do not run `crashlogger`
@@ -26,7 +27,7 @@ kernel command line.  It responds to the following settings:
 - `virtcon.disable` - if set, do not launch shells on virtual consoles as they become available
 
 
-Logical flow:
+## Logical flow
 
 - At startup
     - initialize /dev
@@ -115,7 +116,7 @@ opened to new devices in this devhost:
 - DC_OP_CREATE_DEVICE
 - DC_OP_BIND_DRIVER
 
-Logical flow:
+##Logical flow:
 
 - main gets bootstrap handle from devmgr, and listens on it as the root_ios.
 - root_ios dispatches the startup handle to dh_handle_dc_rpc
