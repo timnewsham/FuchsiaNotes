@@ -14,6 +14,11 @@ as shell and utilities.  Fuchsia builds on this base to provide
 (stuff about ephemeral code from the network, sandboxing, post-API,
 language neutral, graphical environment, etc).
 
+Magenta and Fuchsia are in development and evolving rapidly.  These
+notes are my attempt at documenting a moving target.
+Its possible some details are wrong and very likely that they will
+become wrong. 
+
 # Notes
 
 - [Magenta Overview](Magenta.md)
