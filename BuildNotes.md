@@ -6,7 +6,7 @@ in [Build System](https://github.com/fuchsia-mirror/docs/blob/master/build_syste
 # Adding Magenta Programs
 Adding a new magenta user application to the build system is straightforward.
 Create a new directory under a `uapp` directory, such as
-`third_party/uapp` and add build rules and your sourc code. 
+`third_party/uapp` and add build rules and your source code. 
 Here is a small test program named `hello.c`:
 
 ```c
