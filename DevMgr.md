@@ -96,7 +96,7 @@ kernel command line.  It responds to the following settings:
     - add it to the parent dir
     - notify anyone listening for changes
 
-- TODO list
+### TODO list
     - dm/dmctl
     - more details on vfs and how libc and devmgr cooperate to present filesystems
     - more stuff on mounting?
@@ -116,7 +116,7 @@ opened to new devices in this devhost:
 - DC_OP_CREATE_DEVICE
 - DC_OP_BIND_DRIVER
 
-##Logical flow:
+## Logical flow:
 
 - main gets bootstrap handle from devmgr, and listens on it as the root_ios.
 - root_ios dispatches the startup handle to dh_handle_dc_rpc
@@ -145,7 +145,7 @@ opened to new devices in this devhost:
     - on closed, die
     - on readable, calls dh_handle_rpc_read and dies on error
 
-- XXX TODO
+### TODO
     - multiple related drivers can coexist in a devhost, like the framebuffer driver and the gfx console driver.  XXX figure out how these bind together
 
 
