@@ -11,11 +11,8 @@ important processes, such as console and virtual-console shells.
 It notices new filesystems as they become available and mounts
 some of them automatically.
 
-- XXX TODO
-    - dm/dmctl
-    - more details on vfs and how libc and devmgr cooperate to present filesystems
-    - more stuff on mounting?
-    - more stuff on driver loading and shared libs perhaps lots of details on matching and binding drivers?  perhaps this could go in separate ddk documentation 
+Logical flow:
+
 - At startup
     - initialize /dev
         - populates /dev/class 
@@ -44,7 +41,6 @@ some of them automatically.
         - watch "/dev/class/console" directory and for each new file added
             - if name starts with "vc", set it as active and launch shell
     - run the coordinator
-
 - coordinator
     - initializes acpi and pcie
     - initialize /dev/misc, /dev/socket, /dev/platform
@@ -56,8 +52,7 @@ some of them automatically.
             - WORK_DEVICE_ADDED dispatch to dc_handle_new_device
                 - search a list of all drivers to see if the new device can bind to one of them
         - otherwise dispatch the dc_port, which calls callbacks on events
-
-XXX tie in dc_handle_device
+- XXX tie in dc_handle_device
 - dc_handle_device handles IO on the coordinator channel
     - on closed - remove device
     - on read call dc_handle_device_read and on failure remove device
@@ -79,12 +74,18 @@ XXX tie in dc_handle_device
             - kerneldebug
             - @<cmd>
         - DC_OP_STATUS
-
 - devfs_publish is used to put a device into /dev
     - make a fs node
     - if appropriate, link it into /dev/class/<proto>/
     - add it to the parent dir
     - notify anyone listening for changes
+
+- TODO list
+    - dm/dmctl
+    - more details on vfs and how libc and devmgr cooperate to present filesystems
+    - more stuff on mounting?
+    - more stuff on driver loading and shared libs perhaps lots of details on matching and binding drivers?  perhaps this could go in separate ddk documentation 
+
 
 ------
 # DEVHOST
@@ -99,15 +100,9 @@ opened to new devices in this devhost:
 - DC_OP_CREATE_DEVICE
 - DC_OP_BIND_DRIVER
 
-- XXX TODO
-    - multiple related drivers can coexist in a devhost, like the framebuffer driver and the gfx console driver.  XXX figure out how these bind together
-
-
-    - Devhost uses dh_port to wait for events
-        - to watch for events on handles, a devhost_iostate_t is filled out with the handle and handler function, and port_watch is used to direct events to dh_port
+Logical flow:
 
 - main gets bootstrap handle from devmgr, and listens on it as the root_ios.
-
 - root_ios dispatches the startup handle to dh_handle_dc_rpc
     - on closed, die
     - on readable call dh_handle_rpc_read, die on errors
@@ -130,10 +125,16 @@ opened to new devices in this devhost:
             - finds driver
             - calls bind op if it exists
             - sends response back
-
 - dh_handle_dc_rpc dispatched when device handles readable/closed
     - on closed, die
     - on readable, calls dh_handle_rpc_read and dies on error
+
+- XXX TODO
+    - multiple related drivers can coexist in a devhost, like the framebuffer driver and the gfx console driver.  XXX figure out how these bind together
+
+
+    - Devhost uses dh_port to wait for events
+        - to watch for events on handles, a devhost_iostate_t is filled out with the handle and handler function, and port_watch is used to direct events to dh_port
 
 ------------
 # comments
