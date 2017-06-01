@@ -20,6 +20,7 @@ language neutral, graphical environment, etc).
     - [Syscalls](Syscalls.md)
     - [DevMgr](DevMgr.md)
     - [FileSystem](FileSystem.md)
+- [BuildNotes](BuildNotes.md)
 
 # References
 
