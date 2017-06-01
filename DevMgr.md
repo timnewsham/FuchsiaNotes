@@ -97,10 +97,10 @@ kernel command line.  It responds to the following settings:
     - notify anyone listening for changes
 
 ### TODO list
-    - dm/dmctl
-    - more details on vfs and how libc and devmgr cooperate to present filesystems
-    - more stuff on mounting?
-    - more stuff on driver loading and shared libs perhaps lots of details on matching and binding drivers?  perhaps this could go in separate ddk documentation 
+- dm/dmctl
+- more details on vfs and how libc and devmgr cooperate to present filesystems
+- more stuff on mounting?
+- more stuff on driver loading and shared libs perhaps lots of details on matching and binding drivers?  perhaps this could go in separate ddk documentation 
 
 
 ------
@@ -146,11 +146,9 @@ opened to new devices in this devhost:
     - on readable, calls dh_handle_rpc_read and dies on error
 
 ### TODO
-    - multiple related drivers can coexist in a devhost, like the framebuffer driver and the gfx console driver.  XXX figure out how these bind together
-
-
-    - Devhost uses dh_port to wait for events
-        - to watch for events on handles, a devhost_iostate_t is filled out with the handle and handler function, and port_watch is used to direct events to dh_port
+- multiple related drivers can coexist in a devhost, like the framebuffer driver and the gfx console driver.  XXX figure out how these bind together
+- Devhost uses dh_port to wait for events
+    - to watch for events on handles, a devhost_iostate_t is filled out with the handle and handler function, and port_watch is used to direct events to dh_port
 
 ------------
 # comments
