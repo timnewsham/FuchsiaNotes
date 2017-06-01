@@ -11,6 +11,21 @@ important processes, such as console and virtual-console shells.
 It notices new filesystems as they become available and mounts
 some of them automatically.
 
+DevMgr receives environment variables that are passed on the
+kernel command line.  It responds to the following settings:
+- `crashlogger.disable` - if set, do not run `crashlogger`
+- `crashlogger.pt` - if set to `true`, pass `-pton` to `crashlogger` to enable support for Intel PT
+- `devmgr.verbose` - enable verbose logging
+- `ldso.trace` - pass the environment variable `LD_TRACE=1` to all new processes, to enable tracing of shared library loading
+- `magenta.autorun.boot` - specifies a program to run once the system is running
+- `magenta.autorun.system` - specifies a program to run once `/system` is mounted
+- `magenta.nodename` - node name to pass to `netsvc`
+- `netsvc.disable` - if set, do not run `netsvc`
+- `startup.keep-log.visible` - if set, keep logging to kernel instead of to virtual console
+- `TERM` - terminal type, passed in environment when starting the shell
+- `virtcon.disable` - if set, do not launch shells on virtual consoles as they become available
+
+
 Logical flow:
 
 - At startup
