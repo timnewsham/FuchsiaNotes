@@ -180,7 +180,7 @@ main(int argc, char **argv)
     msg.hcount = 0xfffffff; // make server walk past end of memory
     mx_handle_t root = getRoot();
     mx_status_t x = mx_channel_write(root, 0, &msg, MXRIO_HDR_SZ, 0, 0); // send no handles
-    if(x != NO_ERROR) {
+    if(x != MX_OK) {
         printf("channel write failed %x\n", x);
         return 1;
     }

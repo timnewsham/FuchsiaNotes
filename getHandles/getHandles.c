@@ -37,7 +37,7 @@ void getHandle(mx_handle_t h)
     mx_status_t x;
 
     x = mx_object_get_info(h, MX_INFO_HANDLE_BASIC, &info, sizeof info, 0, 0);
-    if(x == NO_ERROR) {
+    if(x == MX_OK) {
         printf("%x type %s/%d rights %x koid %lx\n", h, typeName(info.type), info.type, info.rights, info.koid);
     }
 }
@@ -52,7 +52,7 @@ int main(int argc, char **argv)
     // handles are xor'd against a hidden value.  get one handle
     // to get an approximate range
     h1 = 0;
-    if(mx_channel_create(0, &h1, &h2) == NO_ERROR) {
+    if(mx_channel_create(0, &h1, &h2) == MX_OK) {
         printf("h1 is %x and h2 is %x\n", h1, h2);
     }
 
@@ -72,7 +72,7 @@ int main(int argc, char **argv)
     msg.rd_num_bytes = 0;
     msg.rd_num_handles = 0;
     x = mx_channel_call(root, 0, MX_TIME_INFINITE, &msg, &nb, &nh, &st);
-    if(x == NO_ERROR) {
+    if(x == MX_OK) {
         printf("call success, got %d (%d handles)\n", nb, nh);
     }
     return 0;

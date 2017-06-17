@@ -44,7 +44,7 @@ main(int argc, char **argv)
 {
     mx_handle_t h;
     mx_status_t st = mx_vmo_create(8192, 0, &h);
-    if(st != NO_ERROR) {
+    if(st != MX_OK) {
         printf("vmo create failed %d\n", st);
         return 1;
     }

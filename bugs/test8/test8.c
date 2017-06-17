@@ -43,12 +43,12 @@ main(int argc, char **argv)
 {
     mx_handle_t h;
     mx_status_t st = mx_vmo_create(8192, 0, &h);
-    if(st != NO_ERROR) {
+    if(st != MX_OK) {
         printf("vmo create failed!\n");
         return 1;
     }
     st = mx_vmar_map(mx_vmar_root_self(), 0, h, 0, 0x48000ff0000, 0x23, malloc(0x80008d00));
-    if(st != NO_ERROR) {
+    if(st != MX_OK) {
         printf("vmar map fliaed!\n");
         return 1;
     }

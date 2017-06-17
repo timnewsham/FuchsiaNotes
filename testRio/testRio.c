@@ -26,7 +26,7 @@ showHandle(mx_handle_t h)
     mx_status_t x;
 
     x = mx_object_get_info(h, MX_INFO_HANDLE_BASIC, &info, sizeof info, 0, 0);
-    if(x != NO_ERROR) {
+    if(x != MX_OK) {
         printf("%x: bad handle\n", h);
     } else {
         printf("%x type %d rights %x koid %lx\n", h, info.type, info.rights, info.koid);
@@ -65,7 +65,7 @@ int main(int argc, char **argv)
     showHandle(root);
 
     /* to open a file we need a new channel pair */
-    if(mx_channel_create(0, &h1, &h2) != NO_ERROR) {
+    if(mx_channel_create(0, &h1, &h2) != MX_OK) {
         printf("cant get channel\n");
         return 1;
     }
@@ -93,7 +93,7 @@ int main(int argc, char **argv)
 
     /* send the message */
     x = mx_channel_write(root, 0, &msg, MXRIO_HDR_SZ + msg.datalen, handtab, msg.hcount);
-    if(x != NO_ERROR) {
+    if(x != MX_OK) {
         printf("write failed %d\n", x);
         return 1;
     }
@@ -101,21 +101,21 @@ int main(int argc, char **argv)
 
     /* wait for a response from h1 (not root!) */
     x = mx_object_wait_one(h1, MX_CHANNEL_READABLE, MX_TIME_INFINITE, 0);
-    if(x != NO_ERROR) {
+    if(x != MX_OK) {
         printf("wait failed %d\n", x);
         return 1;
     }
 
     /* 
      * Read the response from h1.  It will have a status code
-     * and info about the type of connection.  We expect status == NO_ERROR
+     * and info about the type of connection.  We expect status == MX_OK
      * and type == MXIO_PROTOCOL_REMOTE.
      */
     uint32_t nb, nh;
     mxrio_object_t obj;
     x = mx_channel_read(h1, 0, &obj, handtab, sizeof obj,
                         sizeof handtab / sizeof handtab[0], &nb, &nh);
-    if(x != NO_ERROR) {
+    if(x != MX_OK) {
         printf("read failed %d\n", x);
         return 1;
     }
@@ -136,7 +136,7 @@ int main(int argc, char **argv)
     msg.arg = 8;
     msg.arg2.off = 0;
     x = mx_channel_write(h1, 0, &msg, MXRIO_HDR_SZ + msg.datalen, 0, 0);
-    if(x != NO_ERROR) {
+    if(x != MX_OK) {
         printf("write2 failed %d\n", x);
         return 1;
     }
@@ -146,7 +146,7 @@ int main(int argc, char **argv)
      * mx_channel_call here to writ, wait and read all at once.
      */
     x = mx_object_wait_one(h1, MX_CHANNEL_READABLE, MX_TIME_INFINITE, 0);
-    if(x != NO_ERROR) {
+    if(x != MX_OK) {
         printf("wait2 failed %d\n", x);
         return 1;
     }
@@ -154,7 +154,7 @@ int main(int argc, char **argv)
     /* read the result (also a msg) */
     x = mx_channel_read(h1, 0, &msg, handtab, sizeof msg,
                         sizeof handtab / sizeof handtab[0], &nb, &nh);
-    if(x != NO_ERROR) {
+    if(x != MX_OK) {
         printf("read2 failed %d\n", x);
         return 1;
     }
