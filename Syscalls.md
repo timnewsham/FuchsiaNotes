@@ -69,6 +69,12 @@ arguments in `%rdi, %rsi, %rdx, %r10, %r8, %r9, %r12, %r13`.
 Aarch64 passes the system call number in `x16` and arguments
 in `x0 .. x7`.
 
+System calls are usually invoked through `libmagenta.so` which
+is a shared library provided to userland processes as a
+VDSO.  This library is specially and cannot be unmapped or
+mapped over.  The kernel only accepts system calls made from
+specific addresses within this VDSO.
+
 # System Call Handling
 
 System calls arrive in the kernel as a fault.  The x86_64 handler
