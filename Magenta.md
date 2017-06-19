@@ -59,7 +59,9 @@ filesystems are written as processes using a DDK interface.
 # Random Tips
 
 * see [https://github.com/fuchsia-mirror/magenta/blob/master/docs/hacking.md]
-  for info on getting to the shell window, and using keys
+  for info on getting to the shell window, and using keys.  Alt-Esc to
+  switch to terminals, Alt-Fn to jump to terminals, Alt-tab to switch
+  to next terminal.
 * The shell has a few interesting builtins for hacking:
     * `k help` and `k mx help.  Sends messages to a kernel
       debugging interface.  Output goes to serial console.
